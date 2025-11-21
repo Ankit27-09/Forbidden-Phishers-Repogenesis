@@ -10,6 +10,10 @@ import VerificationEmailSent from "@/pages/EmailVerification/VerificationEmailSe
 import VerificationStatus from "@/pages/EmailVerification/VerificationStatus";
 import ForgotPassword from "@/pages/ForgotPassword/ForgotPassword";
 import PasswordResetForm from "@/pages/ForgotPassword/PasswordResetForm";
+import EmployerSignup from "@/pages/EmployerSignup/EmployerSignup";
+import EmployerLogin from "@/pages/EmployerLogin/EmployerLogin";
+import EmployerVerificationEmailSent from "@/pages/EmployerEmailVerification/EmployerVerificationEmailSent";
+import EmployerVerificationStatus from "@/pages/EmployerEmailVerification/EmployerVerificationStatus";
 
 
 const mainLayoutRoutes = [
@@ -44,6 +48,22 @@ const router = createBrowserRouter([
       {
         path: "/SignUp",
         element: <SignUpForm />,
+      },
+      {
+        path: "/employer-login",
+        element: <EmployerLogin />,
+      },
+      {
+        path: "/employer-signup",
+        element: <EmployerSignup />,
+      },
+      {
+        path: "/employer/verifymail",
+        element: <EmployerVerificationEmailSent />,
+      },
+      {
+        path: "/employer/verifymail/:verificationToken",
+        element: <EmployerVerificationStatus />,
       },
       {
         path: "/verifymail",
