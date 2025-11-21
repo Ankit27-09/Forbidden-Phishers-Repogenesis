@@ -73,4 +73,3 @@ export const employerLoginSchema = z.object({
 });
 
 export type employerLoginUser = z.infer<typeof employerLoginSchema>;
-

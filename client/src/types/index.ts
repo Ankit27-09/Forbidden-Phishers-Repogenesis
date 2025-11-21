@@ -3,6 +3,8 @@ export interface User {
   username: string;
   email: string;
   is_admin?: boolean;
+  organization?: string;
+  userType?: "student" | "employer";
 }
 
 export interface AuthResponse {

@@ -34,8 +34,7 @@ const EmployerLogin: React.FC = () => {
       if (!response.data.isVerified) {
         navigate(`/employer/verifymail?email=${data.email}`);
       } else {
-        // TODO: Navigate to employer dashboard when available
-        navigate("/");
+        navigate("/employer-dashboard");
       }
     } catch (error) {
       const axiosError = error as AxiosError<ErrorResponse>;
