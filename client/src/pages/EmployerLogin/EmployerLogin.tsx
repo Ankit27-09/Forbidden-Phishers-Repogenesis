@@ -3,19 +3,18 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { AlertCircle, Eye, EyeOff, LinkIcon, Loader2, Building2 } from "lucide-react";
+import { AlertCircle, Eye, EyeOff, Loader2, Building2 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import type { SubmitHandler } from "react-hook-form";
-import { loginSchema } from "@/validation/userSchema.ts";
-import type { loginUser } from "@/validation/userSchema.ts";
+import { employerLoginSchema, type employerLoginUser } from "@/validation/userSchema.ts";
 import SocialButtons from "@/components/Auth/SocialButtons";
 import { AxiosError } from "axios";
 import type { ErrorResponse } from "@/types/auth";
-import { signIn } from "@/api/authService";
+import { employerSignIn } from "@/api/authService";
 
-type employerLoginFields = loginUser & { organization: string };
+type employerLoginFields = employerLoginUser;
 
 const EmployerLogin: React.FC = () => {
   const navigate = useNavigate();
@@ -26,18 +25,16 @@ const EmployerLogin: React.FC = () => {
     setError,
     formState: { errors, isSubmitting },
   } = useForm<employerLoginFields>({ 
-    resolver: zodResolver(loginSchema)
+    resolver: zodResolver(employerLoginSchema)
   });
 
   const onSubmit: SubmitHandler<employerLoginFields> = async (data) => {
     try {
-      // For now, using the same signIn endpoint
-      // In production, this would use a separate employer authentication endpoint
-      const { organization, ...loginData } = data;
-      const response = await signIn(loginData);
+      const response = await employerSignIn(data);
       if (!response.data.isVerified) {
-        navigate(`/verifymail?email=${data.email}`);
+        navigate(`/employer/verifymail?email=${data.email}`);
       } else {
+        // TODO: Navigate to employer dashboard when available
         navigate("/");
       }
     } catch (error) {
@@ -57,7 +54,7 @@ const EmployerLogin: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden bg-gradient-to-br from-[#F9F6EE] via-[#EFE7D4] to-[#E4D7B4]">
+    <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden bg-linear-to-br from-[#F9F6EE] via-[#EFE7D4] to-[#E4D7B4]">
       <div
         className="absolute inset-0 z-0 opacity-30"
         style={{
@@ -70,7 +67,7 @@ const EmployerLogin: React.FC = () => {
         <Card className="w-full h-full backdrop-blur-sm bg-white shadow-xl border-2 border-[#E4D7B4]">
           <CardHeader className="space-y-1 flex flex-col items-center pt-8">
             <div className="flex items-center space-x-3 mb-4">
-              <div className="w-12 h-12 bg-gradient-to-tr from-[#335441] to-[#46704A] rounded-xl flex items-center justify-center shadow-lg">
+              <div className="w-12 h-12 bg-linear-to-tr from-[#335441] to-[#46704A] rounded-xl flex items-center justify-center shadow-lg">
                 <Building2 className="text-white w-6 h-6" />
               </div>
               <CardTitle className="text-3xl font-bold text-[#335441]">
@@ -188,7 +185,7 @@ const EmployerLogin: React.FC = () => {
                 </div>
               </div>
               <Button
-                className="w-full bg-gradient-to-r from-[#335441] to-[#46704A] hover:from-[#46704A] hover:to-[#6B8F60] text-white shadow-lg transition-all duration-200 hover:shadow-xl"
+                className="w-full bg-linear-to-r from-[#335441] to-[#46704A] hover:from-[#46704A] hover:to-[#6B8F60] text-white shadow-lg transition-all duration-200 hover:shadow-xl"
                 type="submit"
                 disabled={isSubmitting}
               >

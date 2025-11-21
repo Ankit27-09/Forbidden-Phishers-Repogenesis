@@ -1,37 +1,45 @@
 import { useState } from "react";
-import { Mail, Lock, Phone, Building2, Eye, EyeOff, Loader2 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Mail, Lock, Phone, Building2, Eye, EyeOff, Loader2, AlertCircle } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { useForm, type SubmitHandler } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { employerSignupSchema, type employerSignupUser } from "@/validation/userSchema";
+import { employerSignUp } from "@/api/authService";
+import { AxiosError } from "axios";
+import type { ErrorResponse } from "@/types/auth";
+
+type employerSignupFields = employerSignupUser;
 
 export default function EmployerSignup() {
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-    firstName: "",
-    lastName: "",
-    phone: "",
-    organization: "",
-  });
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
+  const {
+    register,
+    handleSubmit,
+    setError,
+    formState: { errors, isSubmitting },
+  } = useForm<employerSignupFields>({ resolver: zodResolver(employerSignupSchema) });
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-    // Simulate API call
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 2000);
+  const onSubmit: SubmitHandler<employerSignupFields> = async (data) => {
+    try {
+      const response = await employerSignUp(data);
+
+      if (response.data.success && !response.data.isVerified) {
+        navigate(`/employer/verifymail?email=${data.email}`);
+      }
+    } catch (error) {
+      const axiosError = error as AxiosError<ErrorResponse>;
+      if (axiosError.response && axiosError.response.data) {
+        const backendError = axiosError.response.data.message;
+        console.error("Error:", backendError);
+        setError("root", { message: backendError });
+      }
+    }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#F9F6EE] via-[#EFE7D4] to-[#E4D7B4]">
+    <div className="min-h-screen bg-linear-to-br from-[#F9F6EE] via-[#EFE7D4] to-[#E4D7B4]">
       {/* Header */}
       <header className="border-b-2 border-[#E4D7B4] bg-white/95 backdrop-blur-sm sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
@@ -92,10 +100,16 @@ export default function EmployerSignup() {
               <div className="mb-8">
                 <h2 className="text-3xl font-bold text-[#335441] mb-2 text-balance">Employer Sign Up</h2>
                 <p className="text-[#6B8F60]">Create an account to start hiring top talent</p>
+                {errors.root && (
+                  <div className="flex items-center bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded-md mt-4">
+                    <AlertCircle className="w-5 h-5 mr-3" />
+                    <span>{errors.root.message}</span>
+                  </div>
+                )}
               </div>
 
               {/* Form */}
-              <form onSubmit={handleSubmit} className="space-y-5">
+              <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
                 {/* Email */}
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-[#335441] block">Official Email ID</label>
@@ -103,13 +117,14 @@ export default function EmployerSignup() {
                     <Mail className="absolute left-3 top-3.5 w-5 h-5 text-[#6B8F60]" />
                     <input
                       type="email"
-                      name="email"
+                      {...register("email")}
                       placeholder="your@company.com"
-                      value={formData.email}
-                      onChange={handleChange}
                       className="w-full pl-10 pr-4 py-3 rounded-lg border-2 border-[#E4D7B4] bg-white text-[#335441] placeholder:text-[#A9B782] focus:outline-none focus:ring-2 focus:ring-[#46704A] focus:border-transparent transition-all"
                     />
                   </div>
+                  {errors.email && (
+                    <p className="text-red-500 text-sm">{errors.email.message}</p>
+                  )}
                 </div>
 
                 {/* Name Row */}
@@ -118,40 +133,43 @@ export default function EmployerSignup() {
                     <label className="text-sm font-medium text-[#335441] block">First Name</label>
                     <input
                       type="text"
-                      name="firstName"
+                      {...register("firstName")}
                       placeholder="John"
-                      value={formData.firstName}
-                      onChange={handleChange}
                       className="w-full px-4 py-3 rounded-lg border-2 border-[#E4D7B4] bg-white text-[#335441] placeholder:text-[#A9B782] focus:outline-none focus:ring-2 focus:ring-[#46704A] focus:border-transparent transition-all"
                     />
+                    {errors.firstName && (
+                      <p className="text-red-500 text-sm">{errors.firstName.message}</p>
+                    )}
                   </div>
                   <div className="space-y-2">
                     <label className="text-sm font-medium text-[#335441] block">Last Name</label>
                     <input
                       type="text"
-                      name="lastName"
+                      {...register("lastName")}
                       placeholder="Doe"
-                      value={formData.lastName}
-                      onChange={handleChange}
                       className="w-full px-4 py-3 rounded-lg border-2 border-[#E4D7B4] bg-white text-[#335441] placeholder:text-[#A9B782] focus:outline-none focus:ring-2 focus:ring-[#46704A] focus:border-transparent transition-all"
                     />
+                    {errors.lastName && (
+                      <p className="text-red-500 text-sm">{errors.lastName.message}</p>
+                    )}
                   </div>
                 </div>
 
                 {/* Phone */}
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-[#335441] block">Mobile Number</label>
+                  <label className="text-sm font-medium text-[#335441] block">Mobile Number (Optional)</label>
                   <div className="relative">
                     <Phone className="absolute left-3 top-3.5 w-5 h-5 text-[#6B8F60]" />
                     <input
                       type="tel"
-                      name="phone"
+                      {...register("phone")}
                       placeholder="+1 (555) 123-4567"
-                      value={formData.phone}
-                      onChange={handleChange}
                       className="w-full pl-10 pr-4 py-3 rounded-lg border-2 border-[#E4D7B4] bg-white text-[#335441] placeholder:text-[#A9B782] focus:outline-none focus:ring-2 focus:ring-[#46704A] focus:border-transparent transition-all"
                     />
                   </div>
+                  {errors.phone && (
+                    <p className="text-red-500 text-sm">{errors.phone.message}</p>
+                  )}
                 </div>
 
                 {/* Organization */}
@@ -161,13 +179,14 @@ export default function EmployerSignup() {
                     <Building2 className="absolute left-3 top-3.5 w-5 h-5 text-[#6B8F60]" />
                     <input
                       type="text"
-                      name="organization"
+                      {...register("organization")}
                       placeholder="Your Company"
-                      value={formData.organization}
-                      onChange={handleChange}
                       className="w-full pl-10 pr-4 py-3 rounded-lg border-2 border-[#E4D7B4] bg-white text-[#335441] placeholder:text-[#A9B782] focus:outline-none focus:ring-2 focus:ring-[#46704A] focus:border-transparent transition-all"
                     />
                   </div>
+                  {errors.organization && (
+                    <p className="text-red-500 text-sm">{errors.organization.message}</p>
+                  )}
                 </div>
 
                 {/* Password */}
@@ -177,10 +196,8 @@ export default function EmployerSignup() {
                     <Lock className="absolute left-3 top-3.5 w-5 h-5 text-[#6B8F60]" />
                     <input
                       type={showPassword ? "text" : "password"}
-                      name="password"
+                      {...register("password")}
                       placeholder="••••••••"
-                      value={formData.password}
-                      onChange={handleChange}
                       className="w-full pl-10 pr-10 py-3 rounded-lg border-2 border-[#E4D7B4] bg-white text-[#335441] placeholder:text-[#A9B782] focus:outline-none focus:ring-2 focus:ring-[#46704A] focus:border-transparent transition-all"
                     />
                     <button
@@ -191,15 +208,18 @@ export default function EmployerSignup() {
                       {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                     </button>
                   </div>
+                  {errors.password && (
+                    <p className="text-red-500 text-sm">{errors.password.message}</p>
+                  )}
                 </div>
 
                 {/* Submit Button */}
                 <button
                   type="submit"
-                  disabled={isLoading}
+                  disabled={isSubmitting}
                   className="w-full py-3 px-4 bg-[#335441] text-white rounded-lg font-semibold hover:bg-[#46704A] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 mt-8 shadow-lg hover:shadow-xl"
                 >
-                  {isLoading && <Loader2 className="w-5 h-5 animate-spin" />}
+                  {isSubmitting && <Loader2 className="w-5 h-5 animate-spin" />}
                   Sign Up as Employer
                 </button>
 
@@ -253,7 +273,7 @@ export default function EmployerSignup() {
                 {/* Footer */}
                 <p className="text-center text-sm text-[#6B8F60] mt-8">
                   Already have an account?{" "}
-                  <Link to="/Login" className="text-[#335441] font-semibold hover:underline">
+                  <Link to="/employer-login" className="text-[#335441] font-semibold hover:underline">
                     Sign in
                   </Link>
                 </p>
