@@ -428,15 +428,31 @@ export default function ResponsiveNavbar() {
                         {user?.username}
                       </p>
                       <p className="text-xs text-[#6B8F60]">{user?.email}</p>
+                      {user?.organization && (
+                        <p className="text-xs text-[#6B8F60] mt-1">
+                          {user.organization}
+                        </p>
+                      )}
                     </div>
                     <div className="py-1">
-                      <AdminNavLink
-                        authenticated={isLoggedIn}
-                        onMobileMenuClose={() =>
-                          setIsProfileDropdownOpen(false)
-                        }
-                        isDropdown={true}
-                      />
+                      {user?.userType === "employer" ? (
+                        <Link
+                          to="/employer-dashboard"
+                          onClick={() => setIsProfileDropdownOpen(false)}
+                          className="flex items-center px-4 py-2 text-sm text-[#6B8F60] hover:bg-[#F9F6EE] hover:text-[#335441] transition-colors duration-200"
+                        >
+                          <Building2 size={16} className="mr-3" />
+                          Dashboard
+                        </Link>
+                      ) : (
+                        <AdminNavLink
+                          authenticated={isLoggedIn}
+                          onMobileMenuClose={() =>
+                            setIsProfileDropdownOpen(false)
+                          }
+                          isDropdown={true}
+                        />
+                      )}
                       <Link
                         to="/change-username"
                         onClick={() => setIsProfileDropdownOpen(false)}
@@ -750,14 +766,30 @@ export default function ResponsiveNavbar() {
                       {user?.username}
                     </p>
                     <p className="text-xs text-[#6B8F60]">{user?.email}</p>
+                    {user?.organization && (
+                      <p className="text-xs text-[#6B8F60]">
+                        {user.organization}
+                      </p>
+                    )}
                   </div>
                 </div>
               </div>
-              <AdminNavLink
-                authenticated={isLoggedIn}
-                onMobileMenuClose={() => setIsMobileMenuOpen(false)}
-                isMobile={true}
-              />
+              {user?.userType === "employer" ? (
+                <Link
+                  to="/employer-dashboard"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="flex items-center space-x-2 px-3 py-2 text-[#6B8F60] hover:text-[#335441] transition-colors duration-300"
+                >
+                  <Building2 size={20} />
+                  <span>Dashboard</span>
+                </Link>
+              ) : (
+                <AdminNavLink
+                  authenticated={isLoggedIn}
+                  onMobileMenuClose={() => setIsMobileMenuOpen(false)}
+                  isMobile={true}
+                />
+              )}
               <Link
                 to="/change-username"
                 onClick={() => setIsMobileMenuOpen(false)}
