@@ -43,7 +43,7 @@ export default function EmployerSignup() {
           </Link>
           <div className="text-sm text-[#6B8F60]">
             Already have an account?{" "}
-            <Link to="/Login" className="text-[#335441] font-semibold hover:underline">
+            <Link to="/employer-login" className="text-[#335441] font-semibold hover:underline">
               Sign in
             </Link>
           </div>
