@@ -14,6 +14,7 @@ import EmployerSignup from "@/pages/EmployerSignup/EmployerSignup";
 import EmployerLogin from "@/pages/EmployerLogin/EmployerLogin";
 import EmployerVerificationEmailSent from "@/pages/EmployerEmailVerification/EmployerVerificationEmailSent";
 import EmployerVerificationStatus from "@/pages/EmployerEmailVerification/EmployerVerificationStatus";
+import EmployerDashboard from "@/pages/EmployerDashboard/EmployerDashboard";
 
 
 const mainLayoutRoutes = [
@@ -56,6 +57,10 @@ const router = createBrowserRouter([
       {
         path: "/employer-signup",
         element: <EmployerSignup />,
+      },
+      {
+        path: "/employer-dashboard",
+        element: <EmployerDashboard />,
       },
       {
         path: "/employer/verifymail",
