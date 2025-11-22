@@ -340,6 +340,18 @@ export default function ResponsiveNavbar() {
                     PDF Chatbot
                   </Link>
                   <Link
+                    to="/industry-insights"
+                    onClick={() => setAiToolsOpen(false)}
+                    className={`block px-4 py-2 text-sm transition-colors duration-200 ${
+                      isActive("/pdf-chat")
+                        ? "text-[#335441] font-semibold bg-[#F9F6EE]"
+                        : "text-[#6B8F60] hover:text-[#335441] hover:bg-[#F9F6EE]"
+                    }`}
+                    role="menuitem"
+                  >
+                    Indsutry Insights
+                  </Link>
+                  <Link
                     to="/podcasts"
                     onClick={() => setAiToolsOpen(false)}
                     className={`block px-4 py-2 text-sm transition-colors duration-200 ${
@@ -697,8 +709,19 @@ export default function ResponsiveNavbar() {
                     : "text-[#6B8F60] hover:text-[#335441] hover:bg-[#F9F6EE]"
                 }`}
               >
+
+                
+                <Link
+                to="/industry-insights"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-all duration-300 ${
+                  isActive("/podcasts")
+                    ? "text-[#335441] font-semibold bg-[#F9F6EE]"
+                    : "text-[#6B8F60] hover:text-[#335441] hover:bg-[#F9F6EE]"
+                }`}
+              ></Link>
                 <Mic2 size={20} />
-                <span>AI Podcast Studio</span>
+                <span>Industry Insights</span>
               </Link>
               <Link
                 to="/"
