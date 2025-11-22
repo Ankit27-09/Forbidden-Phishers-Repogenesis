@@ -23,6 +23,8 @@ import CourseTestPage from "@/pages/Courses/CourseTestPage";
 import TestResultsPage from "@/pages/Courses/TestResultsPage";
 import CertificateVerificationPage from "@/pages/Courses/CertificateVerificationPage";
 import IndustryInsightsComponent from "./pages/IndustryInsights/IndustryInsights";
+import PodcastPage from "@/pages/Podcast/PodcastPage";
+import PodcastPlayerPage from "@/pages/Podcast/PodcastPlayerPage";
 
 const mainLayoutRoutes = [
   {
@@ -65,6 +67,14 @@ const mainLayoutRoutes = [
   {
     path: "/verify-certificate",
     element: <CertificateVerificationPage />,
+  },
+   {
+    path: "/podcasts",
+    element: <PodcastPage />,
+  },
+  {
+    path: "/podcasts/:id",
+    element: <PodcastPlayerPage />,
   },
 ];
 
