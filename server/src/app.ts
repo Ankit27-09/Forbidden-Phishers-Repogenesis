@@ -44,7 +44,7 @@ passportConfig(passport);
 
 app.get("/", (req: Request, res: Response) => {
   res.json({
-    message: "DSCE Hackman Server is running",
+    message: "Repogenesis BMSCE Server is running",
   });
 });
 
@@ -52,7 +52,7 @@ app.get("/", (req: Request, res: Response) => {
 app.get("/api/health", (req: Request, res: Response) => {
   res.json({
     status: "OK",
-    message: "DSCE Hackman Server is running",
+    message: "Repogenesis BMSCE Server is running",
     environment: {
       GROQ_API_KEY: process.env.GROQ_API_KEY ? "✅ Loaded" : "❌ Missing",
       HEYGEN_API_KEY: process.env.HEYGEN_API_KEY ? "✅ Loaded" : "❌ Missing",
