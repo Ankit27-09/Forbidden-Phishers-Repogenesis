@@ -1,0 +1,156 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=4
+
+_global_script_classes=[  ]
+_global_script_class_icons={
+}
+
+[PluginSettings]
+
+gddlg/DialogJsonPaths={
+}
+gddlg/LoadOnReady=true
+gddlg/StrictDialogAttributes=false
+gddlg/StrictOptionAttributes=false
+
+[application]
+
+config/name="Codemon"
+config/description="Educational game with focus on fundamental of programming "
+run/main_scene="res://scene/interface/main_menu.tscn"
+config/icon="res://icon.png"
+config/windows_native_icon="res://codemon.ico"
+config/version="beta_1.0.0"
+
+[audio]
+
+default_bus_layout="res://audio_layout.tres"
+
+[autoload]
+
+game="*res://scene/game.gd"
+persistence="*res://scene/persistence.gd"
+
+[debug]
+
+settings/crash_handler/message="Por favor envie um e-mail do print para: uniaodk@gmail.com"
+gdscript/warnings/unused_variable=false
+gdscript/warnings/return_value_discarded=false
+
+[display]
+
+window/size/resizable=false
+window/size/fullscreen=true
+window/size/test_width=1024
+window/size/test_height=600
+window/per_pixel_transparency/allowed=true
+window/stretch/mode="2d"
+window/stretch/aspect="keep"
+
+[editor_plugins]
+
+enabled=PoolStringArray( "dialogue_tree" )
+
+[input]
+
+ui_left={
+"deadzone": 0.5,
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":65,"physical_scancode":0,"unicode":0,"echo":false,"script":null)
+, Object(InputEventJoypadButton,"resource_local_to_scene":false,"resource_name":"","device":0,"button_index":14,"pressure":0.0,"pressed":false,"script":null)
+, Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":16777231,"physical_scancode":0,"unicode":0,"echo":false,"script":null)
+ ]
+}
+ui_right={
+"deadzone": 0.5,
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":68,"physical_scancode":0,"unicode":0,"echo":false,"script":null)
+, Object(InputEventJoypadButton,"resource_local_to_scene":false,"resource_name":"","device":0,"button_index":15,"pressure":0.0,"pressed":false,"script":null)
+, Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":16777233,"physical_scancode":0,"unicode":0,"echo":false,"script":null)
+ ]
+}
+ui_up={
+"deadzone": 0.5,
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":87,"physical_scancode":0,"unicode":0,"echo":false,"script":null)
+, Object(InputEventJoypadButton,"resource_local_to_scene":false,"resource_name":"","device":0,"button_index":12,"pressure":0.0,"pressed":false,"script":null)
+, Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":16777232,"physical_scancode":0,"unicode":0,"echo":false,"script":null)
+ ]
+}
+ui_down={
+"deadzone": 0.5,
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":83,"physical_scancode":0,"unicode":0,"echo":false,"script":null)
+, Object(InputEventJoypadButton,"resource_local_to_scene":false,"resource_name":"","device":0,"button_index":13,"pressure":0.0,"pressed":false,"script":null)
+, Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":16777234,"physical_scancode":0,"unicode":0,"echo":false,"script":null)
+ ]
+}
+ui_pick_talk={
+"deadzone": 0.5,
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":69,"physical_scancode":0,"unicode":0,"echo":false,"script":null)
+ ]
+}
+
+[layer_names]
+
+2d_render/layer_1="player"
+2d_render/layer_2="codemon"
+2d_render/layer_3="npc"
+2d_render/layer_4="object"
+2d_render/layer_5="scenary"
+2d_physics/layer_1="player"
+2d_physics/layer_2="codemon"
+2d_physics/layer_3="npc"
+2d_physics/layer_4="object"
+2d_physics/layer_5="scenary"
+
+[locale]
+
+locale_filter=[ 1, [ "en", "pt_BR" ] ]
+translations=PoolStringArray( "res://i18n/i18n.en.translation", "res://i18n/i18n.pt_BR.translation" )
+translation_remaps={
+"res://art/chalenge/circuit_logic/off.png": PoolStringArray( "res://art/chalenge/circuit_logic/off_pt.png:pt_BR" ),
+"res://art/chalenge/circuit_logic/on.png": PoolStringArray( "res://art/chalenge/circuit_logic/on_pt.png:pt_BR" ),
+"res://art/object/board.png": PoolStringArray( "res://art/object/board_pt.png:pt_BR" ),
+"res://art/tutorial/and.png": PoolStringArray( "res://art/tutorial/and_pt.png:pt_BR" ),
+"res://art/tutorial/bigger.png": PoolStringArray( "res://art/tutorial/bigger_pt.png:pt_BR" ),
+"res://art/tutorial/bool.png": PoolStringArray( "res://art/tutorial/bool_pt.png:pt_BR" ),
+"res://art/tutorial/bubble_sort.png": PoolStringArray( "res://art/tutorial/bubble_sort.png:pt_BR" ),
+"res://art/tutorial/divide.png": PoolStringArray( "res://art/tutorial/divide_pt.png:pt_BR" ),
+"res://art/tutorial/double.png": PoolStringArray( "res://art/tutorial/double_pt.png:pt_BR" ),
+"res://art/tutorial/else.png": PoolStringArray( "res://art/tutorial/else_pt.png:pt_BR" ),
+"res://art/tutorial/equal.png": PoolStringArray( "res://art/tutorial/equal_pt.png:pt_BR" ),
+"res://art/tutorial/for.png": PoolStringArray( "res://art/tutorial/for_pt.png:pt_BR" ),
+"res://art/tutorial/if.png": PoolStringArray( "res://art/tutorial/if_pt.png:pt_BR" ),
+"res://art/tutorial/int.png": PoolStringArray( "res://art/tutorial/int_pt.png:pt_BR" ),
+"res://art/tutorial/less.png": PoolStringArray( "res://art/tutorial/less_pt.png:pt_BR" ),
+"res://art/tutorial/minus.png": PoolStringArray( "res://art/tutorial/minus_pt.png:pt_BR" ),
+"res://art/tutorial/modulo.png": PoolStringArray( "res://art/tutorial/modulo_pt.png:pt_BR" ),
+"res://art/tutorial/multiply.png": PoolStringArray( "res://art/tutorial/multiply_pt.png:pt_BR" ),
+"res://art/tutorial/not_equal.png": PoolStringArray( "res://art/tutorial/not_equal_pt.png:pt_BR" ),
+"res://art/tutorial/or.png": PoolStringArray( "res://art/tutorial/or_pt.png:pt_BR" ),
+"res://art/tutorial/plug.png": PoolStringArray( "res://art/tutorial/plug_pt.png:pt_BR" ),
+"res://art/tutorial/plus.png": PoolStringArray( "res://art/tutorial/plus_pt.png:pt_BR" ),
+"res://art/tutorial/string.png": PoolStringArray( "res://art/tutorial/string_pt.png:pt_BR" ),
+"res://art/tutorial/while.png": PoolStringArray( "res://art/tutorial/while_pt.png:pt_BR" )
+}
+
+[logging]
+
+file_logging/enable_file_logging=true
+
+[physics]
+
+common/physics_fps=150
+
+[rendering]
+
+quality/driver/driver_name="GLES2"
+quality/intended_usage/framebuffer_allocation=0
+quality/intended_usage/framebuffer_allocation.mobile=0
+2d/snapping/use_gpu_pixel_snap=true
+environment/default_clear_color=Color( 0, 0, 0, 1 )
+quality/2d/use_pixel_snap=true
