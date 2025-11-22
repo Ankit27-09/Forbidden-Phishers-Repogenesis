@@ -8,17 +8,16 @@ import { Link, useNavigate } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import type { SubmitHandler } from "react-hook-form";
-import { loginSchema } from "@/validation/userSchema.ts";
-import type { loginUser } from "@/validation/userSchema.ts";
+import { candidateSignupSchema } from "@/validation/userSchema";
+import type { candidateSignupUser } from "@/validation/userSchema";
 import SocialButtons from "@/components/Auth/SocialButtons";
-import { signIn } from "@/api/authService";
+import { candidateSignUp } from "@/api/authService";
 import { AxiosError } from "axios";
 import type { ErrorResponse } from "@/types/auth";
 
+type CandidateSignupFields = candidateSignupUser;
 
-type loginFields = loginUser;
-
-const LoginForm: React.FC = () => {
+const CandidateSignUpForm: React.FC = () => {
   const navigate = useNavigate();
 
   const {
@@ -26,15 +25,14 @@ const LoginForm: React.FC = () => {
     handleSubmit,
     setError,
     formState: { errors, isSubmitting },
-  } = useForm<loginFields>({ resolver: zodResolver(loginSchema) });
+  } = useForm<CandidateSignupFields>({ resolver: zodResolver(candidateSignupSchema) });
 
-  const onSubmit: SubmitHandler<loginFields> = async (data) => {
+  const onSubmit: SubmitHandler<CandidateSignupFields> = async (data) => {
     try {
-      const response = await signIn(data);
-      if (!response.data.isVerified) {
+      const response = await candidateSignUp(data);
+
+      if (response.data.success && !response.data.isVerified) {
         navigate(`/verifymail?email=${data.email}`);
-      } else {
-        navigate("/");
       }
     } catch (error) {
       const axiosError = error as AxiosError<ErrorResponse>;
@@ -62,10 +60,10 @@ const LoginForm: React.FC = () => {
         }}
       />
 
-      <div className="w-full max-w-xl z-10 flex items-center justify-center">
+      <div className="w-full max-w-2xl z-10 flex items-center justify-center">
         <Card className="w-full h-full backdrop-blur-sm bg-white shadow-xl border-2 border-[#E4D7B4]">
           <CardHeader className="space-y-1 flex flex-col items-center pt-8">
-            <div className="flex items-center space-x-3 mb-4">
+            <div className="flex items-center space-x-3 mb-3">
               <div className="w-12 h-12 bg-gradient-to-tr from-[#335441] to-[#46704A] rounded-xl flex items-center justify-center shadow-lg">
                 <LinkIcon className="text-white w-6 h-6" />
               </div>
@@ -74,13 +72,13 @@ const LoginForm: React.FC = () => {
               </CardTitle>
             </div>
           </CardHeader>
-          <CardContent className="space-y-6 px-8 py-6">
+          <CardContent className="space-y-6 px-8 py-5">
             <div className="space-y-2 text-center">
               <h2 className="text-3xl font-semibold tracking-tight text-[#335441]">
-                Welcome back
+                Sign Up as Candidate
               </h2>
               <p className="text-sm text-[#6B8F60]">
-                Enter your credentials to access your account
+                Create your candidate account to start your preparation journey
               </p>
               {errors.root && (
                 <div className="flex items-center bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded-md">
@@ -89,11 +87,63 @@ const LoginForm: React.FC = () => {
                 </div>
               )}
             </div>
-            <form
-              className="space-y-4"
-              onSubmit={handleSubmit(onSubmit)}
-              noValidate
-            >
+            <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label
+                    htmlFor="firstName"
+                    className="text-sm font-medium text-[#335441]"
+                  >
+                    First Name
+                  </Label>
+                  <Input
+                    {...register("firstName")}
+                    id="firstName"
+                    placeholder="John"
+                    required
+                    className="transition-all duration-200 focus:ring-2 focus:ring-[#335441] border-2 border-[#E4D7B4]"
+                  />
+                  {errors.firstName && (
+                    <p className="text-red-500 text-sm">{errors.firstName.message}</p>
+                  )}
+                </div>
+                <div className="space-y-2">
+                  <Label
+                    htmlFor="lastName"
+                    className="text-sm font-medium text-[#335441]"
+                  >
+                    Last Name
+                  </Label>
+                  <Input
+                    {...register("lastName")}
+                    id="lastName"
+                    placeholder="Doe"
+                    required
+                    className="transition-all duration-200 focus:ring-2 focus:ring-[#335441] border-2 border-[#E4D7B4]"
+                  />
+                  {errors.lastName && (
+                    <p className="text-red-500 text-sm">{errors.lastName.message}</p>
+                  )}
+                </div>
+              </div>
+              <div className="space-y-2">
+                <Label
+                  htmlFor="username"
+                  className="text-sm font-medium text-[#335441]"
+                >
+                  Username
+                </Label>
+                <Input
+                  {...register("username")}
+                  id="username"
+                  placeholder="johndoe"
+                  required
+                  className="transition-all duration-200 focus:ring-2 focus:ring-[#335441] border-2 border-[#E4D7B4]"
+                />
+                {errors.username && (
+                  <p className="text-red-500 text-sm">{errors.username.message}</p>
+                )}
+              </div>
               <div className="space-y-2">
                 <Label
                   htmlFor="email"
@@ -105,7 +155,7 @@ const LoginForm: React.FC = () => {
                   {...register("email")}
                   id="email"
                   type="email"
-                  placeholder="m@example.com"
+                  placeholder="john@example.com"
                   required
                   className="transition-all duration-200 focus:ring-2 focus:ring-[#335441] border-2 border-[#E4D7B4]"
                 />
@@ -114,20 +164,30 @@ const LoginForm: React.FC = () => {
                 )}
               </div>
               <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <Label
-                    htmlFor="password"
-                    className="text-sm font-medium text-[#335441]"
-                  >
-                    Password
-                  </Label>
-                  <Link
-                    to="/forgot-password"
-                    className="text-sm text-[#335441] hover:text-[#46704A] hover:underline transition-colors"
-                  >
-                    Forgot password?
-                  </Link>
-                </div>
+                <Label
+                  htmlFor="phone"
+                  className="text-sm font-medium text-[#335441]"
+                >
+                  Phone Number (Optional)
+                </Label>
+                <Input
+                  {...register("phone")}
+                  id="phone"
+                  type="tel"
+                  placeholder="+1 (555) 123-4567"
+                  className="transition-all duration-200 focus:ring-2 focus:ring-[#335441] border-2 border-[#E4D7B4]"
+                />
+                {errors.phone && (
+                  <p className="text-red-500 text-sm">{errors.phone.message}</p>
+                )}
+              </div>
+              <div className="space-y-2">
+                <Label
+                  htmlFor="password"
+                  className="text-sm font-medium text-[#335441]"
+                >
+                  Password
+                </Label>
                 <div className="space-y-2">
                   <div className="relative">
                     <Input
@@ -138,7 +198,6 @@ const LoginForm: React.FC = () => {
                       required
                       className="transition-all duration-200 focus:ring-2 focus:ring-[#335441] border-2 border-[#E4D7B4] pr-10"
                     />
-
                     <button
                       type="button"
                       onClick={togglePasswordVisibility}
@@ -160,12 +219,12 @@ const LoginForm: React.FC = () => {
                 </div>
               </div>
               <Button
+                disabled={isSubmitting}
                 className="w-full bg-gradient-to-r from-[#335441] to-[#46704A] hover:from-[#46704A] hover:to-[#6B8F60] text-white shadow-lg transition-all duration-200 hover:shadow-xl"
                 type="submit"
-                disabled={isSubmitting}
               >
                 {isSubmitting && <Loader2 className="h-5 w-5 animate-spin" />}{" "}
-                Sign In
+                Create Candidate Account
               </Button>
             </form>
             <div className="relative">
@@ -183,19 +242,21 @@ const LoginForm: React.FC = () => {
             </div>
             <div className="text-center text-sm text-[#6B8F60]">
               <p>
-                Don't have an account?{" "}
+                Already have an account?{" "}
                 <Link
-                  to="/candidate/signup"
+                  to="/Login"
                   className="font-medium text-[#335441] hover:text-[#46704A] hover:underline"
                 >
-                  Sign up as Candidate
+                  Log In
                 </Link>
-                {" or "}
+              </p>
+              <p className="mt-2">
+                Are you an organization?{" "}
                 <Link
                   to="/organization/signup"
                   className="font-medium text-[#335441] hover:text-[#46704A] hover:underline"
                 >
-                  Sign up as Organization
+                  Sign up here
                 </Link>
               </p>
             </div>
@@ -206,4 +267,4 @@ const LoginForm: React.FC = () => {
   );
 };
 
-export default LoginForm;
+export default CandidateSignUpForm;

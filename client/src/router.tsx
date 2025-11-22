@@ -6,6 +6,8 @@ import MainLayout from "@/layout/Mainlayout";
 import ProtectedRoute from "@/components/ProtectedRoute/ProtectedRoute";
 import LoginForm from "@/pages/Login/Login";
 import SignUpForm from "@/pages/SignUp/SignUp";
+import CandidateSignUpForm from "@/pages/SignUp/CandidateSignUp";
+import OrganizationSignUpForm from "@/pages/SignUp/OrganizationSignUp";
 import VerificationEmailSent from "@/pages/EmailVerification/VerificationEmailSent";
 import VerificationStatus from "@/pages/EmailVerification/VerificationStatus";
 import ForgotPassword from "@/pages/ForgotPassword/ForgotPassword";
@@ -50,6 +52,14 @@ const router = createBrowserRouter([
       {
         path: "/SignUp",
         element: <SignUpForm />,
+      },
+      {
+        path: "/candidate/signup",
+        element: <CandidateSignUpForm />,
+      },
+      {
+        path: "/organization/signup",
+        element: <OrganizationSignUpForm />,
       },
       {
         path: "/verifymail",

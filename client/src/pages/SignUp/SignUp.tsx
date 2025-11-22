@@ -1,55 +1,10 @@
-import React, { useState } from "react";
+import React from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { AlertCircle, Eye, EyeOff, LinkIcon, Loader2 } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
-import { signupSchema } from "@/validation/userSchema";
-import type { signupUser } from "@/validation/userSchema";
-import { useForm } from "react-hook-form";
-import type { SubmitHandler } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import SocialButtons from "@/components/Auth/SocialButtons";
-import { signUp } from "@/api/authService";
-import type { ErrorResponse } from "@/types/auth";
-import { AxiosError } from "axios";
-
-type signupFields = signupUser;
+import { LinkIcon, Users, Building2 } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const SignUpForm: React.FC = () => {
-  const navigate = useNavigate();
-
-  const {
-    register,
-    handleSubmit,
-    setError,
-    formState: { errors, isSubmitting },
-  } = useForm<signupFields>({ resolver: zodResolver(signupSchema) });
-
-  const onSubmit: SubmitHandler<signupFields> = async (data) => {
-    try {
-      const response = await signUp(data);
-
-      if (response.data.success && !response.data.isVerified) {
-        navigate(`/verifymail?email=${data.email}`);
-      }
-    } catch (error) {
-      const axiosError = error as AxiosError<ErrorResponse>;
-      if (axiosError.response && axiosError.response.data) {
-        const backendError = axiosError.response.data.message;
-        console.error("Error:", backendError);
-        setError("root", { message: backendError });
-      }
-    }
-  };
-
-  const [showPassword, setShowPassword] = useState<boolean>(false);
-
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
-  };
-
   return (
     <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden bg-gradient-to-br from-[#F9F6EE] via-[#EFE7D4] to-[#E4D7B4]">
       <div
@@ -60,10 +15,10 @@ const SignUpForm: React.FC = () => {
         }}
       />
 
-      <div className="w-full max-w-xl  z-10 flex items-center justify-center">
-        <Card className="w-full h-full backdrop-blur-sm bg-white shadow-xl border-2 border-[#E4D7B4]">
+      <div className="w-full max-w-4xl z-10 flex items-center justify-center">
+        <Card className="w-full backdrop-blur-sm bg-white shadow-xl border-2 border-[#E4D7B4]">
           <CardHeader className="space-y-1 flex flex-col items-center pt-8">
-            <div className="flex items-center space-x-3 mb-3">
+            <div className="flex items-center space-x-3 mb-4">
               <div className="w-12 h-12 bg-gradient-to-tr from-[#335441] to-[#46704A] rounded-xl flex items-center justify-center shadow-lg">
                 <LinkIcon className="text-white w-6 h-6" />
               </div>
@@ -72,120 +27,78 @@ const SignUpForm: React.FC = () => {
               </CardTitle>
             </div>
           </CardHeader>
-          <CardContent className="space-y-6 px-8 py-5">
+          <CardContent className="space-y-8 px-8 py-6">
             <div className="space-y-2 text-center">
-              <h2 className="text-3xl font-semibold tracking-tight text-[#335441]">
-                Sign Up
+              <h2 className="text-4xl font-semibold tracking-tight text-[#335441]">
+                Join PrepX
               </h2>
-              <p className="text-sm text-[#6B8F60]">
-                Enter your information to create an account
+              <p className="text-lg text-[#6B8F60]">
+                Choose how you'd like to get started with PrepX
               </p>
-              {errors.root && (
-                <div className="flex items-center bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded-md">
-                  <AlertCircle className="w-5 h-5 mr-3" />
-
-                  <span>{errors.root.message}</span>
-                </div>
-              )}
             </div>
-            <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
-              <div className="space-y-2">
-                <Label
-                  htmlFor="username"
-                  className="text-sm font-medium text-[#335441]"
-                >
-                  Username
-                </Label>
-                <Input
-                  {...register("username")}
-                  id="username"
-                  placeholder="John Doe"
-                  required
-                  className="transition-all duration-200 focus:ring-2 focus:ring-[#335441] border-2 border-[#E4D7B4]"
-                />
-                {errors.username && (
-                  <p className="text-red-500">{errors.username.message}</p>
-                )}
-              </div>
-              <div className="space-y-2">
-                <Label
-                  htmlFor="email"
-                  className="text-sm font-medium text-[#335441]"
-                >
-                  Email
-                </Label>
-                <Input
-                  {...register("email")}
-                  id="email"
-                  type="email"
-                  placeholder="m@example.com"
-                  required
-                  className="transition-all duration-200 focus:ring-2 focus:ring-[#335441] border-2 border-[#E4D7B4]"
-                />
-                {errors.email && (
-                  <p className="text-red-500">{errors.email.message}</p>
-                )}
-              </div>
-              <div className="space-y-2">
-                <Label
-                  htmlFor="password"
-                  className="text-sm font-medium text-[#335441]"
-                >
-                  Password
-                </Label>
-
-                <div className="space-y-2">
-                  <div className="relative">
-                    <Input
-                      {...register("password")}
-                      id="password"
-                      type={showPassword ? "text" : "password"}
-                      placeholder="Your password"
-                      required
-                      className="transition-all duration-200 focus:ring-2 focus:ring-[#335441] border-2 border-[#E4D7B4] pr-10"
-                    />
-                    <button
-                      type="button"
-                      onClick={togglePasswordVisibility}
-                      className="absolute inset-y-0 right-0 pr-3 flex items-center text-[#6B8F60] hover:text-[#335441]"
-                      aria-label={
-                        showPassword ? "Hide password" : "Show password"
-                      }
-                    >
-                      {showPassword ? (
-                        <EyeOff className="h-5 w-5" />
-                      ) : (
-                        <Eye className="h-5 w-5" />
-                      )}
-                    </button>
+            
+            <div className="grid md:grid-cols-2 gap-6">
+              {/* Candidate Card */}
+              <Card className="group hover:shadow-lg transition-all duration-300 border-2 border-[#E4D7B4] hover:border-[#335441]">
+                <CardContent className="p-6 text-center space-y-4">
+                  <div className="w-16 h-16 mx-auto bg-gradient-to-tr from-[#335441] to-[#46704A] rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                    <Users className="text-white w-8 h-8" />
                   </div>
-                  {errors.password && (
-                    <p className="text-red-500">{errors.password.message}</p>
-                  )}
-                </div>
-              </div>
-              <Button
-                disabled={isSubmitting}
-                className="w-full bg-gradient-to-r from-[#335441] to-[#46704A] hover:from-[#46704A] hover:to-[#6B8F60] text-white shadow-lg transition-all duration-200 hover:shadow-xl"
-                type="submit"
-              >
-                {isSubmitting && <Loader2 className="h-5 w-5 animate-spin" />}{" "}
-                Sign Up
-              </Button>
-            </form>
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t border-gray-300" />
-              </div>
-              <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-white px-2 text-gray-500">
-                  Or continue with
-                </span>
-              </div>
+                  <div className="space-y-2">
+                    <h3 className="text-2xl font-semibold text-[#335441]">
+                      I'm a Candidate
+                    </h3>
+                    <p className="text-[#6B8F60]">
+                      Looking to prepare for interviews and enhance my skills
+                    </p>
+                  </div>
+                  <div className="space-y-3">
+                    <ul className="text-sm text-[#6B8F60] space-y-1">
+                      <li>• Access interview questions</li>
+                      <li>• Practice coding challenges</li>
+                      <li>• Get preparation resources</li>
+                      <li>• Track your progress</li>
+                    </ul>
+                    <Link to="/candidate/signup" className="block">
+                      <Button className="w-full bg-gradient-to-r from-[#335441] to-[#46704A] hover:from-[#46704A] hover:to-[#6B8F60] text-white shadow-lg transition-all duration-200 hover:shadow-xl">
+                        Sign Up as Candidate
+                      </Button>
+                    </Link>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Organization Card */}
+              <Card className="group hover:shadow-lg transition-all duration-300 border-2 border-[#E4D7B4] hover:border-[#335441]">
+                <CardContent className="p-6 text-center space-y-4">
+                  <div className="w-16 h-16 mx-auto bg-gradient-to-tr from-[#335441] to-[#46704A] rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                    <Building2 className="text-white w-8 h-8" />
+                  </div>
+                  <div className="space-y-2">
+                    <h3 className="text-2xl font-semibold text-[#335441]">
+                      I'm an Organization
+                    </h3>
+                    <p className="text-[#6B8F60]">
+                      Looking to post jobs and find talented candidates
+                    </p>
+                  </div>
+                  <div className="space-y-3">
+                    <ul className="text-sm text-[#6B8F60] space-y-1">
+                      <li>• Post job openings</li>
+                      <li>• Create custom assessments</li>
+                      <li>• Find qualified candidates</li>
+                      <li>• Manage hiring process</li>
+                    </ul>
+                    <Link to="/organization/signup" className="block">
+                      <Button className="w-full bg-gradient-to-r from-[#335441] to-[#46704A] hover:from-[#46704A] hover:to-[#6B8F60] text-white shadow-lg transition-all duration-200 hover:shadow-xl">
+                        Sign Up as Organization
+                      </Button>
+                    </Link>
+                  </div>
+                </CardContent>
+              </Card>
             </div>
-            <div className="grid grid-cols-2 gap-4">
-              <SocialButtons />
-            </div>
+
             <div className="text-center text-sm text-[#6B8F60]">
               Already have an account?{" "}
               <Link
