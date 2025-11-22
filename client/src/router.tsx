@@ -22,12 +22,17 @@ import CreateCoursePage from "@/pages/Courses/CreateCoursePage";
 import CourseTestPage from "@/pages/Courses/CourseTestPage";
 import TestResultsPage from "@/pages/Courses/TestResultsPage";
 import CertificateVerificationPage from "@/pages/Courses/CertificateVerificationPage";
+import IndustryInsightsComponent from "./pages/IndustryInsights/IndustryInsights";
 
 const mainLayoutRoutes = [
   {
     path: "/",
     index: true,
     element: <Home />,
+  },
+  {
+    path: "/industry-insights",
+    element: <IndustryInsightsComponent />,
   },
   {
     path: "/interview-resources",
