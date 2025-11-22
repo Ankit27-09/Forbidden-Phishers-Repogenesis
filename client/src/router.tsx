@@ -15,7 +15,8 @@ import EmployerLogin from "@/pages/EmployerLogin/EmployerLogin";
 import EmployerVerificationEmailSent from "@/pages/EmployerEmailVerification/EmployerVerificationEmailSent";
 import EmployerVerificationStatus from "@/pages/EmployerEmailVerification/EmployerVerificationStatus";
 import EmployerDashboard from "@/pages/EmployerDashboard/EmployerDashboard";
-
+import InterviewResourcesPage from "@/pages/InterviewResources/InterviewResourcesPage";
+import InterviewQuestions from "@/pages/InterviewQuestions/InterviewQuestions";
 
 const mainLayoutRoutes = [
   {
@@ -23,9 +24,15 @@ const mainLayoutRoutes = [
     index: true,
     element: <Home />,
   },
-  
+  {
+    path: "/interview-resources",
+    element: <InterviewResourcesPage />,
+  },
+  {
+    path: "/interview-questions",
+    element: <InterviewQuestions />,
+  },
 ];
-
 
 const router = createBrowserRouter([
   {
@@ -35,7 +42,6 @@ const router = createBrowserRouter([
       {
         path: "/",
         element: <ProtectedRoute />,
-        
       },
       {
         path: "/",
