@@ -28,6 +28,7 @@ import PodcastPlayerPage from "@/pages/Podcast/PodcastPlayerPage";
 import InterviewHelp from "./pages/InterviewHelp/InterviewHelp";
 import YourInterviews from "./pages/YourInterviews/YourInterviews";
 import Results from "./pages/Results/Results";
+import Interview from "./pages/AI_Interview/Interview";
 
 const mainLayoutRoutes = [
   {
@@ -154,8 +155,10 @@ const router = createBrowserRouter([
       {
         path: "/reset-password/:resetToken",
         element: <PasswordResetForm />,
+      },{
+        path: "/interview/:interviewId",
+        element: <Interview />,
       },
-
       {
         path: "*",
         element: <NotFound />,
