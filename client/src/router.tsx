@@ -58,7 +58,7 @@ const mainLayoutRoutes = [
     element: <TestResultsPage />,
   },
   {
-    path: "/verify-certificate/:certificateId",
+    path: "/verify-certificate",
     element: <CertificateVerificationPage />,
   },
 ];
