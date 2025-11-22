@@ -1,6 +1,6 @@
 
 import { backendUrl } from '@/config/backendUrl';
-import type{ loginUser, ResetPasswordFormData, signupUser } from "@/validation/userSchema";
+import type{ loginUser, ResetPasswordFormData, candidateSignupUser, organizationSignupUser } from "@/validation/userSchema";
 
 import axios from 'axios';
 
@@ -14,9 +14,18 @@ const apiClient = axios.create({
   withCredentials: true
 });
 
+// Role-based signup functions
+export const candidateSignUp = async (data: candidateSignupUser) => {
+  return apiClient.post('/auth/candidate/signup', data);
+}
 
-export const signUp = async (data: signupUser) => {
-  return apiClient.post('/auth/signup',data)
+export const organizationSignUp = async (data: organizationSignupUser) => {
+  return apiClient.post('/auth/organisation/signup', data);
+}
+
+// Legacy signup function for backward compatibility
+export const signUp = async (data: candidateSignupUser) => {
+  return candidateSignUp(data);
 }
 
 export const signIn = async (data: loginUser) => {

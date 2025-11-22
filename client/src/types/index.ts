@@ -2,9 +2,13 @@ export interface User {
   id: number;
   username: string;
   email: string;
-  is_admin?: boolean;
+  firstName?: string;
+  lastName?: string;
+  phone?: string;
+  role?: "CANDIDATE" | "ORGANISATION";
   organization?: string;
-  userType?: "student" | "employer";
+  is_admin?: boolean;
+  userType?: "student" | "employer"; // Legacy field for backward compatibility
 }
 
 export interface AuthResponse {
