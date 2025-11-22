@@ -20,6 +20,7 @@ import {
   User as UserIcon,
   Mic2,
   Code,
+  Download,
 } from "lucide-react";
 import AdminNavLink from "../admin/AdminNavLink";
 
@@ -402,6 +403,17 @@ export default function ResponsiveNavbar() {
                 </div>
               )}
             </div>
+
+            {/* Download Button */}
+            <a
+              href="https://drive.google.com/drive/folders/1O-ibamlV8EqbzEfGwIRyPaf1jC6_vXDF?usp=sharing"
+              download
+              className="flex items-center space-x-2 px-4 py-2 bg-[#335441] text-white rounded-lg hover:bg-[#46704A] transition-all duration-300"
+              title="Download Source Code"
+            >
+              <Download size={18} />
+              <span className="hidden lg:inline">Download Codemon</span>
+            </a>
 
             {/* Auth area */}
             {isLoggedIn ? (
