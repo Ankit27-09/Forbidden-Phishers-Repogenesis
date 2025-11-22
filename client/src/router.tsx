@@ -14,6 +14,8 @@ import ForgotPassword from "@/pages/ForgotPassword/ForgotPassword";
 import PasswordResetForm from "@/pages/ForgotPassword/PasswordResetForm";
 import InterviewResourcesPage from "@/pages/InterviewResources/InterviewResourcesPage";
 import InterviewQuestions from "@/pages/InterviewQuestions/InterviewQuestions";
+import OrganizationDashboard from "@/pages/OrganizationDashboard/OrganizationDashboard";
+import OrganizationProtectedRoute from "@/components/ProtectedRoute/OrganizationProtectedRoute";
 
 const mainLayoutRoutes = [
   {
@@ -60,6 +62,14 @@ const router = createBrowserRouter([
       {
         path: "/organization/signup",
         element: <OrganizationSignUpForm />,
+      },
+      {
+        path: "/organization/dashboard",
+        element: (
+          <OrganizationProtectedRoute>
+            <OrganizationDashboard />
+          </OrganizationProtectedRoute>
+        ),
       },
       {
         path: "/verifymail",

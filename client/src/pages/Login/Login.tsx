@@ -34,7 +34,12 @@ const LoginForm: React.FC = () => {
       if (!response.data.isVerified) {
         navigate(`/verifymail?email=${data.email}`);
       } else {
-        navigate("/");
+        // Redirect based on user role
+        if (response.data.user?.role === "ORGANISATION") {
+          navigate("/organization/dashboard");
+        } else {
+          navigate("/");
+        }
       }
     } catch (error) {
       const axiosError = error as AxiosError<ErrorResponse>;
