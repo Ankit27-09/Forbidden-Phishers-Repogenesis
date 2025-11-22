@@ -14,6 +14,8 @@ import organisationRouter from "./routes/organisationRoutes";
 import courseRouter from "./courses/courseRoute";
 import industryInsightsRouter from "./industry/industryInsights";
 import podcastRouter from './podcast/podcasts';
+import livekitRouter from './livekit/livekitRoute';
+import interviewRouter from './interview/interviewRoute';
 
 config();
 
@@ -65,6 +67,8 @@ app.use("/api/industry", industryInsightsRouter);
 app.use("/api/v1/organisation", organisationRouter);
 app.use("/api/v1/courses", courseRouter);
 app.use('/api/podcasts', podcastRouter);
+app.use('/api/v1/livekit', livekitRouter);
+app.use('/api/v1/interview', interviewRouter);
 app.use(globalErrorHandler);
 
 export { server, io };
