@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { useSelector } from "react-redux";
-import { RootState } from "../../store/store";
+import { type RootState } from "../../store/store";
 import { backendUrl } from "../../config/backendUrl";
 import {
   GraduationCap,

@@ -2,8 +2,9 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useSelector } from "react-redux";
-import { RootState } from "../../store/store";
+import { type RootState } from "../../store/store";
 import { backendUrl } from "../../config/backendUrl";
+import toast from "react-hot-toast";
 import {
   BookOpen,
   CheckCircle,
@@ -156,6 +157,19 @@ export default function CourseDetailPage() {
       return;
     }
 
+    // Optimistic update
+    setCourse((prev) =>
+      prev
+        ? {
+            ...prev,
+            is_enrolled: true,
+            enrollment_data: { progressPercentage: 0, isCompleted: false },
+          }
+        : prev
+    );
+
+    toast.success("Successfully enrolled in course!");
+
     try {
       const token = localStorage.getItem("accessToken");
       await axios.post(
@@ -163,9 +177,11 @@ export default function CourseDetailPage() {
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      fetchCourse();
     } catch (error) {
       console.error("Error enrolling:", error);
+      toast.error("Failed to enroll. Please try again.");
+      // Revert on error
+      fetchCourse();
     }
   };
 
@@ -175,6 +191,16 @@ export default function CourseDetailPage() {
       return;
     }
 
+    // Optimistic update
+    const previousBookmarkState = course?.is_bookmarked;
+    const willBeBookmarked = !previousBookmarkState;
+
+    setCourse((prev) =>
+      prev ? { ...prev, is_bookmarked: willBeBookmarked } : prev
+    );
+
+    toast.success(willBeBookmarked ? "Course bookmarked!" : "Bookmark removed");
+
     try {
       const token = localStorage.getItem("accessToken");
       await axios.post(
@@ -182,9 +208,13 @@ export default function CourseDetailPage() {
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      fetchCourse();
     } catch (error) {
       console.error("Error toggling bookmark:", error);
+      toast.error("Failed to update bookmark");
+      // Revert on error
+      setCourse((prev) =>
+        prev ? { ...prev, is_bookmarked: previousBookmarkState || false } : prev
+      );
     }
   };
 
@@ -194,16 +224,63 @@ export default function CourseDetailPage() {
   ) => {
     if (!isLoggedIn) return;
 
+    const newCompletionState = !isCompleted;
+
+    // Optimistic update - update both course chapters and selected chapter
+    setCourse((prev) => {
+      if (!prev) return prev;
+
+      const updatedChapters = prev.chapters.map((ch) =>
+        ch.id === chapterId ? { ...ch, isCompleted: newCompletionState } : ch
+      );
+
+      // Calculate new progress
+      const completedCount = updatedChapters.filter(
+        (ch) => ch.isCompleted
+      ).length;
+      const progressPercentage = Math.round(
+        (completedCount / updatedChapters.length) * 100
+      );
+      const allCompleted = progressPercentage === 100;
+
+      return {
+        ...prev,
+        chapters: updatedChapters,
+        enrollment_data: prev.enrollment_data
+          ? {
+              ...prev.enrollment_data,
+              progressPercentage,
+              isCompleted: allCompleted,
+            }
+          : null,
+      };
+    });
+
+    // Update selected chapter
+    setSelectedChapter((prev) =>
+      prev && prev.id === chapterId
+        ? { ...prev, isCompleted: newCompletionState }
+        : prev
+    );
+
+    if (newCompletionState) {
+      toast.success("Chapter marked as complete! 🎉");
+    } else {
+      toast.success("Chapter marked as incomplete");
+    }
+
     try {
       const token = localStorage.getItem("accessToken");
       await axios.post(
         `${backendUrl}/api/v1/courses/${id}/chapters/${chapterId}/progress`,
-        { isCompleted: !isCompleted },
+        { isCompleted: newCompletionState },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      fetchCourse();
     } catch (error) {
       console.error("Error updating progress:", error);
+      toast.error("Failed to update progress");
+      // Revert on error
+      fetchCourse();
     }
   };
 
