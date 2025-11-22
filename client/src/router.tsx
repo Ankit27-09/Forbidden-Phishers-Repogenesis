@@ -25,6 +25,9 @@ import CertificateVerificationPage from "@/pages/Courses/CertificateVerification
 import IndustryInsightsComponent from "./pages/IndustryInsights/IndustryInsights";
 import PodcastPage from "@/pages/Podcast/PodcastPage";
 import PodcastPlayerPage from "@/pages/Podcast/PodcastPlayerPage";
+import InterviewHelp from "./pages/InterviewHelp/InterviewHelp";
+import YourInterviews from "./pages/YourInterviews/YourInterviews";
+import Results from "./pages/Results/Results";
 
 const mainLayoutRoutes = [
   {
@@ -75,6 +78,26 @@ const mainLayoutRoutes = [
   {
     path: "/podcasts/:id",
     element: <PodcastPlayerPage />,
+  },
+  {
+    path: "/industry-insights",
+    element: <IndustryInsightsComponent />,
+  },
+  {
+    path: "/interview-questions",
+    element: <InterviewQuestions />,
+  },
+  {
+    path: "/interview",
+    element: <InterviewHelp />,
+  },
+  {
+    path: "/your-interviews",
+    element: <YourInterviews />,
+  },
+  {
+    path: "/interview/results/:interviewId",
+    element: <Results />,
   },
 ];
 
