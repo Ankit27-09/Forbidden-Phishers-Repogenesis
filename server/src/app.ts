@@ -12,6 +12,7 @@ import authRouter from "./auth/authRoute";
 import candidateRouter from "./routes/candidateRoutes";
 import organisationRouter from "./routes/organisationRoutes";
 import courseRouter from "./courses/courseRoute";
+import industryInsightsRouter from "./industry/industryInsights";
 
 config();
 
@@ -59,6 +60,7 @@ app.get("/api/health", (req: Request, res: Response) => {
 // API Routes
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/candidate", candidateRouter);
+app.use("/api/industry", industryInsightsRouter);
 app.use("/api/v1/organisation", organisationRouter);
 app.use("/api/v1/courses", courseRouter);
 app.use(globalErrorHandler);
