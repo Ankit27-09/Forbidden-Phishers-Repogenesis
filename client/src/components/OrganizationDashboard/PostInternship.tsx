@@ -6,20 +6,22 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
+import { internshipAPI } from "@/api/organizationService"
 
 export default function PostInternship() {
   const [formData, setFormData] = useState({
     title: "",
-    jobType: "hybrid",
+    jobType: "hybrid" as "in-office" | "remote" | "hybrid",
     location: "",
     skills: "",
     description: "",
     stipend: "",
-    duration: "3-months",
+    duration: "3-months" as "1-month" | "2-months" | "3-months" | "6-months",
     openings: "1",
   })
 
   const [showPreview, setShowPreview] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target
@@ -31,20 +33,42 @@ export default function PostInternship() {
     setShowPreview(true)
   }
 
-  const handlePostInternship = () => {
-    console.log("Posting internship:", formData)
-    alert("Internship posted successfully!")
-    setFormData({
-      title: "",
-      jobType: "hybrid",
-      location: "",
-      skills: "",
-      description: "",
-      stipend: "",
-      duration: "3-months",
-      openings: "1",
-    })
-    setShowPreview(false)
+  const handlePostInternship = async () => {
+    setIsLoading(true)
+    try {
+      const internshipData = {
+        title: formData.title,
+        jobType: formData.jobType,
+        location: formData.location,
+        skills: formData.skills,
+        description: formData.description,
+        stipend: formData.stipend,
+        duration: formData.duration,
+        openings: parseInt(formData.openings)
+      }
+
+      const response = await internshipAPI.createInternship(internshipData)
+      
+      if (response.success) {
+        alert("Internship posted successfully!")
+        setFormData({
+          title: "",
+          jobType: "hybrid",
+          location: "",
+          skills: "",
+          description: "",
+          stipend: "",
+          duration: "3-months",
+          openings: "1",
+        })
+        setShowPreview(false)
+      }
+    } catch (error: any) {
+      console.error("Error posting internship:", error)
+      alert(error.response?.data?.message || "Failed to post internship. Please try again.")
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
@@ -255,13 +279,15 @@ export default function PostInternship() {
             <div className="flex gap-4">
               <Button 
                 onClick={handlePostInternship} 
+                disabled={isLoading}
                 className="bg-gradient-to-r from-[#335441] to-[#46704A] hover:from-[#46704A] hover:to-[#6B8F60] text-white shadow-lg transition-all duration-200"
               >
-                Publish Internship Post
+                {isLoading ? 'Publishing...' : 'Publish Internship Post'}
               </Button>
               <Button 
                 onClick={() => setShowPreview(false)} 
                 variant="outline"
+                disabled={isLoading}
                 className="border-[#335441] text-[#335441] hover:bg-[#EFE7D4]"
               >
                 Back to Editing

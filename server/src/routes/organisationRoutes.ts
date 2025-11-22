@@ -2,6 +2,19 @@ import { Router } from "express";
 import passport from "passport";
 import { requireOrganisation } from "../middleware/roleMiddleware";
 import { getUserProfile, updateUserProfile } from "../auth/authController";
+import {
+  createJob,
+  createInternship,
+  getOrganizationJobs,
+  getOrganizationInternships,
+  getJobById,
+  getInternshipById,
+  updateJob,
+  updateInternship,
+  deleteJob,
+  deleteInternship,
+  getActiveJobsAndInternships
+} from "../controllers/organizationController";
 
 const organisationRouter = Router();
 
@@ -15,31 +28,22 @@ organisationRouter.use(requireOrganisation);
 organisationRouter.get("/profile", getUserProfile);
 organisationRouter.put("/profile", updateUserProfile);
 
-// Job posting related routes (organisations only)
-organisationRouter.get("/jobs", (req, res) => {
-  // TODO: Implement get organisation jobs
-  res.json({ message: "Get organisation jobs", success: true });
-});
+// Job posting routes
+organisationRouter.get("/jobs", getOrganizationJobs);
+organisationRouter.post("/jobs", createJob);
+organisationRouter.get("/jobs/:id", getJobById);
+organisationRouter.put("/jobs/:id", updateJob);
+organisationRouter.delete("/jobs/:id", deleteJob);
 
-organisationRouter.post("/jobs", (req, res) => {
-  // TODO: Implement create job posting
-  res.json({ message: "Create job posting", success: true });
-});
+// Internship posting routes
+organisationRouter.get("/internships", getOrganizationInternships);
+organisationRouter.post("/internships", createInternship);
+organisationRouter.get("/internships/:id", getInternshipById);
+organisationRouter.put("/internships/:id", updateInternship);
+organisationRouter.delete("/internships/:id", deleteInternship);
 
-organisationRouter.get("/jobs/:id", (req, res) => {
-  // TODO: Implement get specific job
-  res.json({ message: `Get job ${req.params.id}`, success: true });
-});
-
-organisationRouter.put("/jobs/:id", (req, res) => {
-  // TODO: Implement update job posting
-  res.json({ message: `Update job ${req.params.id}`, success: true });
-});
-
-organisationRouter.delete("/jobs/:id", (req, res) => {
-  // TODO: Implement delete job posting
-  res.json({ message: `Delete job ${req.params.id}`, success: true });
-});
+// Combined active positions route (for ActiveJobs component)
+organisationRouter.get("/active-positions", getActiveJobsAndInternships);
 
 // Interview management routes
 organisationRouter.get("/interviews", (req, res) => {

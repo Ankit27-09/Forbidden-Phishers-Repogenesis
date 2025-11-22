@@ -6,11 +6,12 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
+import { jobAPI } from "@/api/organizationService"
 
 export default function PostJob() {
   const [formData, setFormData] = useState({
     title: "",
-    jobType: "hybrid",
+    jobType: "hybrid" as "in-office" | "remote" | "hybrid",
     location: "",
     skills: "",
     description: "",
@@ -19,6 +20,7 @@ export default function PostJob() {
   })
 
   const [showPreview, setShowPreview] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target
@@ -30,19 +32,40 @@ export default function PostJob() {
     setShowPreview(true)
   }
 
-  const handlePostJob = () => {
-    console.log("Posting job:", formData)
-    alert("Job posted successfully!")
-    setFormData({
-      title: "",
-      jobType: "hybrid",
-      location: "",
-      skills: "",
-      description: "",
-      ctc: "",
-      openings: "1",
-    })
-    setShowPreview(false)
+  const handlePostJob = async () => {
+    setIsLoading(true)
+    try {
+      const jobData = {
+        title: formData.title,
+        jobType: formData.jobType,
+        location: formData.location,
+        skills: formData.skills,
+        description: formData.description,
+        ctc: formData.ctc,
+        openings: parseInt(formData.openings)
+      }
+
+      const response = await jobAPI.createJob(jobData)
+      
+      if (response.success) {
+        alert("Job posted successfully!")
+        setFormData({
+          title: "",
+          jobType: "hybrid",
+          location: "",
+          skills: "",
+          description: "",
+          ctc: "",
+          openings: "1",
+        })
+        setShowPreview(false)
+      }
+    } catch (error: any) {
+      console.error("Error posting job:", error)
+      alert(error.response?.data?.message || "Failed to post job. Please try again.")
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
@@ -230,13 +253,15 @@ export default function PostJob() {
             <div className="flex gap-4">
               <Button 
                 onClick={handlePostJob} 
+                disabled={isLoading}
                 className="bg-gradient-to-r from-[#335441] to-[#46704A] hover:from-[#46704A] hover:to-[#6B8F60] text-white shadow-lg transition-all duration-200"
               >
-                Publish Job Post
+                {isLoading ? 'Publishing...' : 'Publish Job Post'}
               </Button>
               <Button 
                 onClick={() => setShowPreview(false)} 
                 variant="outline"
+                disabled={isLoading}
                 className="border-[#335441] text-[#335441] hover:bg-[#EFE7D4]"
               >
                 Back to Editing

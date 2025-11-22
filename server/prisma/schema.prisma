@@ -13,6 +13,21 @@ enum UserRole {
   ORGANISATION
 }
 
+enum JobType {
+  IN_OFFICE
+  REMOTE
+  HYBRID
+}
+
+enum ApplicationStatus {
+  APPLIED
+  SHORTLISTED
+  INTERVIEW_SCHEDULED
+  INTERVIEW_COMPLETED
+  SELECTED
+  REJECTED
+}
+
 model User {
   id            String          @id @default(auto()) @map("_id") @db.ObjectId
   username      String
@@ -27,6 +42,10 @@ model User {
   organization  String?
   accounts      Account[]
   interviews    Interview[]
+  jobs          Job[]          // Jobs posted by organization
+  internships   Internship[]   // Internships posted by organization
+  jobApplications JobApplication[] // Job applications by candidate
+  internshipApplications InternshipApplication[] // Internship applications by candidate
   isResumeUploaded Boolean @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -256,4 +275,70 @@ type MalpracticeFlag {
   timestamp   String
   type        String
   description String
+}
+
+// Job and Internship Models
+model Job {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  jobType     JobType   // IN_OFFICE, REMOTE, HYBRID
+  location    String
+  skills      String   // Comma-separated skills
+  description String
+  ctc         String   // Salary range
+  openings    Int      @default(1)
+  organisationId String @db.ObjectId
+  organisation User    @relation(fields: [organisationId], references: [id])
+  applications JobApplication[]
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("jobs")
+}
+
+model Internship {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  jobType     JobType   // IN_OFFICE, REMOTE, HYBRID
+  location    String
+  skills      String   // Comma-separated skills
+  description String
+  stipend     String   // Monthly stipend
+  duration    String   // "1-month", "3-months", etc.
+  openings    Int      @default(1)
+  organisationId String @db.ObjectId
+  organisation User    @relation(fields: [organisationId], references: [id])
+  applications InternshipApplication[]
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("internships")
+}
+
+model JobApplication {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  jobId       String   @db.ObjectId
+  job         Job      @relation(fields: [jobId], references: [id])
+  candidateId String   @db.ObjectId
+  candidate   User     @relation(fields: [candidateId], references: [id])
+  status      ApplicationStatus @default(APPLIED)
+  appliedAt   DateTime @default(now())
+  
+  @@unique([jobId, candidateId])
+  @@map("job_applications")
+}
+
+model InternshipApplication {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  internshipId  String   @db.ObjectId
+  internship    Internship @relation(fields: [internshipId], references: [id])
+  candidateId   String   @db.ObjectId
+  candidate     User     @relation(fields: [candidateId], references: [id])
+  status        ApplicationStatus @default(APPLIED)
+  appliedAt     DateTime @default(now())
+  
+  @@unique([internshipId, candidateId])
+  @@map("internship_applications")
 }
