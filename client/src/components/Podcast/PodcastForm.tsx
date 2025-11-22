@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Upload, FileText, Loader2, Sparkles, Clock, Zap } from "lucide-react";
-import { CreatePodcastRequest } from "@/types/podcasts";
+import {type CreatePodcastRequest } from "@/types/podcasts";
 
 interface PodcastFormProps {
   onSubmit: (data: CreatePodcastRequest) => void;

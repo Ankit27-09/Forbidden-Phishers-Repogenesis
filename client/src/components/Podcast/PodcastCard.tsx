@@ -1,4 +1,4 @@
-import { Podcast } from "@/types/podcasts";
+import {type Podcast } from "@/types/podcasts";
 import {
   Play,
   Trash2,
