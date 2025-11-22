@@ -13,6 +13,7 @@ import candidateRouter from "./routes/candidateRoutes";
 import organisationRouter from "./routes/organisationRoutes";
 import courseRouter from "./courses/courseRoute";
 import industryInsightsRouter from "./industry/industryInsights";
+import podcastRouter from './podcast/podcasts';
 
 config();
 
@@ -63,6 +64,7 @@ app.use("/api/v1/candidate", candidateRouter);
 app.use("/api/industry", industryInsightsRouter);
 app.use("/api/v1/organisation", organisationRouter);
 app.use("/api/v1/courses", courseRouter);
+app.use('/api/podcasts', podcastRouter);
 app.use(globalErrorHandler);
 
 export { server, io };
