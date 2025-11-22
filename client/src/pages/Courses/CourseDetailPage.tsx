@@ -56,13 +56,21 @@ export default function CourseDetailPage() {
   const { isLoggedIn } = useSelector((state: RootState) => state.auth);
 
   useEffect(() => {
+    if (!id) return;
     fetchCourse();
-    if (isLoggedIn) {
-      fetchTests();
-    }
-  }, [id, isLoggedIn]);
+  }, [id]);
+
+  useEffect(() => {
+    if (!id || !isLoggedIn || !course?.is_enrolled) return;
+    fetchTests();
+  }, [id, isLoggedIn, course?.is_enrolled]);
 
   const fetchCourse = async () => {
+    if (!id) {
+      setLoading(false);
+      return;
+    }
+
     try {
       setLoading(true);
       const token = localStorage.getItem("accessToken");
@@ -80,12 +88,14 @@ export default function CourseDetailPage() {
       }
     } catch (error) {
       console.error("Error fetching course:", error);
+      toast.error("Failed to load course");
     } finally {
       setLoading(false);
     }
   };
 
   const fetchTests = async () => {
+    if (!id) return;
     try {
       const token = localStorage.getItem("accessToken");
       const response = await axios.get(
@@ -101,6 +111,13 @@ export default function CourseDetailPage() {
   };
 
   const handleTakeTest = async () => {
+    if (!id) {
+      toast.error("Invalid course ID");
+      return;
+    }
+
+    const loadingToast = toast.loading("Generating test...");
+
     try {
       const token = localStorage.getItem("accessToken");
       const response = await axios.post(
@@ -109,16 +126,29 @@ export default function CourseDetailPage() {
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
+      toast.dismiss(loadingToast);
+
       if (response.data.success) {
+        toast.success("Test generated successfully!");
         navigate(`/courses/${id}/test/${response.data.test.id}`);
       }
     } catch (error: any) {
+      toast.dismiss(loadingToast);
+
       if (error.response?.status === 429) {
         // Cooldown active
         setCooldownInfo(error.response.data.cooldown);
+        toast.error(
+          `Please wait ${
+            error.response.data.cooldown?.remainingHours || 24
+          } hours before taking another test`
+        );
       } else {
         console.error("Error generating test:", error);
-        alert("Failed to generate test. Please try again.");
+        toast.error(
+          error.response?.data?.error ||
+            "Failed to generate test. Please try again."
+        );
       }
     }
   };

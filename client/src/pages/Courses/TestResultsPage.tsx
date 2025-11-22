@@ -33,7 +33,8 @@ interface TestResult {
 }
 
 export default function TestResultsPage() {
-  const { id: courseId, testId } = useParams();
+  const { id, testId } = useParams();
+  const courseId = id;
   const navigate = useNavigate();
   const location = useLocation();
   const [result, setResult] = useState<TestResult | null>(
@@ -43,11 +44,15 @@ export default function TestResultsPage() {
   const [downloadingCert, setDownloadingCert] = useState(false);
 
   useEffect(() => {
+    if (!courseId || !testId) {
+      navigate("/courses");
+      return;
+    }
     if (!result) {
       // Fetch result if not passed via state
       fetchResult();
     }
-  }, []);
+  }, [courseId, testId]);
 
   const fetchResult = async () => {
     try {

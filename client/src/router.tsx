@@ -42,19 +42,19 @@ const mainLayoutRoutes = [
     element: <CoursesPage />,
   },
   {
-    path: "/courses/:id",
-    element: <CourseDetailPage />,
-  },
-  {
     path: "/courses/create",
     element: <CreateCoursePage />,
   },
   {
-    path: "/courses/:courseId/test/:testId",
+    path: "/courses/:id",
+    element: <CourseDetailPage />,
+  },
+  {
+    path: "/courses/:id/test/:testId",
     element: <CourseTestPage />,
   },
   {
-    path: "/courses/:courseId/test/:testId/results",
+    path: "/courses/:id/test/:testId/results",
     element: <TestResultsPage />,
   },
   {

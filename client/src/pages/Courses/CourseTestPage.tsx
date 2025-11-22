@@ -34,8 +34,9 @@ interface TestInstructions {
 }
 
 export default function CourseTestPage() {
-  const { id: courseId, testId } = useParams();
+  const { id, testId } = useParams();
   const navigate = useNavigate();
+  const courseId = id;
   const [test, setTest] = useState<any>(null);
   const [questions, setQuestions] = useState<Question[]>([]);
   const [instructions, setInstructions] = useState<TestInstructions | null>(
@@ -100,6 +101,10 @@ export default function CourseTestPage() {
   }, []);
 
   useEffect(() => {
+    if (!courseId || !testId) {
+      navigate("/courses");
+      return;
+    }
     fetchTest();
   }, [courseId, testId]);
 
@@ -132,43 +137,41 @@ export default function CourseTestPage() {
   }, [showInstructions, timeRemaining]);
 
   const fetchTest = async () => {
+    if (!courseId || !testId) {
+      setLoading(false);
+      return;
+    }
+
     try {
       setLoading(true);
       const token = localStorage.getItem("accessToken");
 
-      // If testId exists, fetch that test, otherwise generate new
-      const url = testId
-        ? `${backendUrl}/api/v1/courses/${courseId}/tests`
-        : `${backendUrl}/api/v1/courses/${courseId}/test/generate`;
+      // Fetch all tests and find the specific one
+      const url = `${backendUrl}/api/v1/courses/${courseId}/tests`;
 
-      const response = await axios({
-        method: testId ? "get" : "post",
-        url,
+      const response = await axios.get(url, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
       if (response.data.success) {
-        let testData;
+        // Find the specific test by testId
+        const testData = response.data.tests.find((t: any) => t.id === testId);
 
-        if (testId) {
-          // Fetching existing test
-          testData = response.data.tests.find((t: any) => t.id === testId);
-          if (!testData) {
-            throw new Error("Test not found");
-          }
-          // Parse JSON strings from database
-          testData.questions =
-            typeof testData.questions === "string"
-              ? JSON.parse(testData.questions)
-              : testData.questions;
-          testData.testInstructions =
-            typeof testData.testInstructions === "string"
-              ? JSON.parse(testData.testInstructions)
-              : testData.testInstructions;
-        } else {
-          // New test generation
-          testData = response.data.test;
+        if (!testData) {
+          console.error("Test not found");
+          navigate(`/courses/${courseId}`);
+          return;
         }
+
+        // Parse JSON strings from database
+        testData.questions =
+          typeof testData.questions === "string"
+            ? JSON.parse(testData.questions)
+            : testData.questions;
+        testData.testInstructions =
+          typeof testData.testInstructions === "string"
+            ? JSON.parse(testData.testInstructions)
+            : testData.testInstructions;
 
         // Validate testData has required fields
         if (!testData || !testData.questions || !testData.testInstructions) {
