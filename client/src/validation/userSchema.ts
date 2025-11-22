@@ -52,24 +52,3 @@ export const emailSchema =  z.object({
 });
 
 export type emailFormData = z.infer<typeof emailSchema>;
-
-// Schema for Employer Signup Validation
-export const employerSignupSchema = z.object({
-  firstName: z.string().min(1, "First name is required"),
-  lastName: z.string().min(1, "Last name is required"),
-  email: z.string().email("Invalid email address"),
-  password: z.string().min(8, "Password must be at least 8 characters long"),
-  organization: z.string().min(1, "Organization name is required"),
-  phone: z.string().optional(),
-});
-
-export type employerSignupUser = z.infer<typeof employerSignupSchema>;
-
-// Schema for Employer Login Validation
-export const employerLoginSchema = z.object({
-  email: z.string().email("Invalid email address"),
-  password: z.string().min(8, "Password must be at least 8 characters long"),
-  organization: z.string().min(1, "Organization name is required"),
-});
-
-export type employerLoginUser = z.infer<typeof employerLoginSchema>;

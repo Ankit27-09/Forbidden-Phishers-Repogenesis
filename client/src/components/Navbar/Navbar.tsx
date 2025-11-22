@@ -20,7 +20,6 @@ import {
   User as UserIcon,
   Mic2,
   Code,
-  Building2,
 } from "lucide-react";
 import AdminNavLink from "../admin/AdminNavLink";
 
@@ -428,31 +427,15 @@ export default function ResponsiveNavbar() {
                         {user?.username}
                       </p>
                       <p className="text-xs text-[#6B8F60]">{user?.email}</p>
-                      {user?.organization && (
-                        <p className="text-xs text-[#6B8F60] mt-1">
-                          {user.organization}
-                        </p>
-                      )}
                     </div>
                     <div className="py-1">
-                      {user?.userType === "employer" ? (
-                        <Link
-                          to="/employer-dashboard"
-                          onClick={() => setIsProfileDropdownOpen(false)}
-                          className="flex items-center px-4 py-2 text-sm text-[#6B8F60] hover:bg-[#F9F6EE] hover:text-[#335441] transition-colors duration-200"
-                        >
-                          <Building2 size={16} className="mr-3" />
-                          Dashboard
-                        </Link>
-                      ) : (
-                        <AdminNavLink
-                          authenticated={isLoggedIn}
-                          onMobileMenuClose={() =>
-                            setIsProfileDropdownOpen(false)
-                          }
-                          isDropdown={true}
-                        />
-                      )}
+                      <AdminNavLink
+                        authenticated={isLoggedIn}
+                        onMobileMenuClose={() =>
+                          setIsProfileDropdownOpen(false)
+                        }
+                        isDropdown={true}
+                      />
                       <Link
                         to="/change-username"
                         onClick={() => setIsProfileDropdownOpen(false)}
@@ -497,30 +480,17 @@ export default function ResponsiveNavbar() {
                 )}
               </div>
             ) : (
-              <div className="flex items-center gap-3">
-                <Link
-                  to="/employer-signup"
-                  className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-all duration-300 ${
-                    isActive("/employer-signup")
-                      ? "bg-[#46704A] text-white"
-                      : "bg-[#6B8F60] text-white hover:bg-[#46704A]"
-                  }`}
-                >
-                  <Building2 size={20} />
-                  <span>For Organizations</span>
-                </Link>
-                <Link
-                  to="/Login"
-                  className={`flex items-center border-2 border-[#335441] space-x-2 px-4 py-2 rounded-lg transition-all duration-300 ${
-                    isActive("/Login")
-                      ? "bg-[#335441] text-white"
-                      : "text-[#335441] hover:bg-[#335441] hover:text-white"
-                  }`}
-                >
-                  <LogIn size={20} />
-                  <span>Login</span>
-                </Link>
-              </div>
+              <Link
+                to="/Login"
+                className={`flex items-center border-2 border-[#335441] space-x-2 px-4 py-2 rounded-lg transition-all duration-300 ${
+                  isActive("/Login")
+                    ? "bg-[#335441] text-white"
+                    : "text-[#335441] hover:bg-[#335441] hover:text-white"
+                }`}
+              >
+                <LogIn size={20} />
+                <span>Login</span>
+              </Link>
             )}
           </div>
         </div>
@@ -766,30 +736,14 @@ export default function ResponsiveNavbar() {
                       {user?.username}
                     </p>
                     <p className="text-xs text-[#6B8F60]">{user?.email}</p>
-                    {user?.organization && (
-                      <p className="text-xs text-[#6B8F60]">
-                        {user.organization}
-                      </p>
-                    )}
                   </div>
                 </div>
               </div>
-              {user?.userType === "employer" ? (
-                <Link
-                  to="/employer-dashboard"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="flex items-center space-x-2 px-3 py-2 text-[#6B8F60] hover:text-[#335441] transition-colors duration-300"
-                >
-                  <Building2 size={20} />
-                  <span>Dashboard</span>
-                </Link>
-              ) : (
-                <AdminNavLink
-                  authenticated={isLoggedIn}
-                  onMobileMenuClose={() => setIsMobileMenuOpen(false)}
-                  isMobile={true}
-                />
-              )}
+              <AdminNavLink
+                authenticated={isLoggedIn}
+                onMobileMenuClose={() => setIsMobileMenuOpen(false)}
+                isMobile={true}
+              />
               <Link
                 to="/change-username"
                 onClick={() => setIsMobileMenuOpen(false)}
@@ -818,32 +772,18 @@ export default function ResponsiveNavbar() {
               </button>
             </div>
           ) : (
-            <div className="border-t-2 border-[#E4D7B4] pt-2 mt-2 space-y-2">
-              <Link
-                to="/employer-signup"
-                onClick={() => setIsMobileMenuOpen(false)}
-                className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-all duration-300 ${
-                  isActive("/employer-signup")
-                    ? "bg-[#46704A] text-white font-semibold"
-                    : "bg-[#6B8F60] text-white hover:bg-[#46704A]"
-                }`}
-              >
-                <Building2 size={20} />
-                <span>For Organizations</span>
-              </Link>
-              <Link
-                to="/Login"
-                onClick={() => setIsMobileMenuOpen(false)}
-                className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-all duration-300 ${
-                  isActive("/Login")
-                    ? "text-[#335441] font-semibold bg-[#F9F6EE]"
-                    : "text-[#6B8F60] hover:text-[#335441] hover:bg-[#F9F6EE]"
-                }`}
-              >
-                <LogIn size={20} />
-                <span>Login</span>
-              </Link>
-            </div>
+            <Link
+              to="/Login"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-all duration-300 ${
+                isActive("/Login")
+                  ? "text-[#335441] font-semibold bg-[#F9F6EE]"
+                  : "text-[#6B8F60] hover:text-[#335441] hover:bg-[#F9F6EE]"
+              }`}
+            >
+              <LogIn size={20} />
+              <span>Login</span>
+            </Link>
           )}
         </div>
       </div>

@@ -51,15 +51,6 @@ const authSlice = createSlice({
       state.loading = false;
       state.isLoggedIn = true;
     },
-    setEmployerAuth: (state, action: PayloadAction<{ accessToken: string; user: User; isResumeUploaded?: boolean }>) => {
-      state.accessToken = action.payload.accessToken;
-      state.user = action.payload.user;
-      state.isResumeUploaded = action.payload.isResumeUploaded ?? false;
-      state.loading = false;
-      state.isLoggedIn = true;
-      // Save token to localStorage
-      localStorage.setItem("accessToken", action.payload.accessToken);
-    },
     logout: (state) => {
       state.accessToken = null;
       state.loading = false;
@@ -94,6 +85,6 @@ const authSlice = createSlice({
   },
 });
 
-export const { setAccessToken, setEmployerAuth, logout } = authSlice.actions;
+export const { setAccessToken, logout } = authSlice.actions;
 
 export default authSlice.reducer;
