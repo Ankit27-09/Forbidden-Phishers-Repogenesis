@@ -9,7 +9,8 @@ import globalErrorHandler from './middleware/globalErrorHandler';
 import passport from 'passport'
 import passportConfig from './config/passport';
 import authRouter from './auth/authRoute';
-import employerAuthRouter from './auth/employerAuthRoute';
+import candidateRouter from './routes/candidateRoutes';
+import organisationRouter from './routes/organisationRoutes';
 
 
 config();
@@ -60,7 +61,8 @@ app.get('/api/health', (req: Request, res: Response) => {
 
 // API Routes
 app.use("/api/v1/auth", authRouter);
-app.use("/api/v1/employer-auth", employerAuthRouter);
+app.use("/api/v1/candidate", candidateRouter);
+app.use("/api/v1/organisation", organisationRouter);
 app.use(globalErrorHandler);
 
 export { server, io };

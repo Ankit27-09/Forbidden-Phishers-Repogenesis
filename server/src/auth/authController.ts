@@ -17,15 +17,17 @@ import {
   sendVerificationEmail,
 } from '../utils/sendEmail';
 import pkg from 'jsonwebtoken';
+import { candidateSignupSchema, organisationSignupSchema, signinSchema, profileUpdateSchema } from '../utils/validation';
 
 const { verify, sign } = pkg;
 
 //TODO : Add Data Validation (Zod etc.)
 
-const signup = async (req: Request, res: Response, next: NextFunction) => {
-  const { username, email, password } = req.body;
-
+const candidateSignup = async (req: Request, res: Response, next: NextFunction) => {
   try {
+    const validatedData = candidateSignupSchema.parse(req.body);
+    const { username, email, password, firstName, lastName, phone } = validatedData;
+
     const existingUser = await prisma.user.findUnique({
       where: {
         email,
@@ -44,6 +46,10 @@ const signup = async (req: Request, res: Response, next: NextFunction) => {
         username,
         email,
         password: hashedPassword,
+        role: 'CANDIDATE',
+        firstName,
+        lastName,
+        phone,
       },
     });
 
@@ -75,15 +81,19 @@ const signup = async (req: Request, res: Response, next: NextFunction) => {
     return next(
       createHttpError(500, 'Unexpected error occurred while creating user')
     );
-  } catch (err) {
+  } catch (err: any) {
     console.log(err);
+    if (err.name === 'ZodError') {
+      return next(createHttpError(400, err.errors[0].message));
+    }
     return next(createHttpError(500, 'Error while processing your request'));
   }
 };
 
 const signin = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { email, password } = req.body;
+    const validatedData = signinSchema.parse(req.body);
+    const { email, password } = validatedData;
 
     const user = await getUserByEmail(email);
 
@@ -144,9 +154,26 @@ const signin = async (req: Request, res: Response, next: NextFunction) => {
       path: '/',
     });
 
-    res.json({ accessToken, isVerified: true, success: true});
-  } catch (error) {
+    res.json({ 
+      accessToken, 
+      isVerified: true, 
+      success: true,
+      user: {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        role: user.role,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        phone: user.phone,
+        organization: user.organization
+      }
+    });
+  } catch (error: any) {
     console.log(error);
+    if (error.name === 'ZodError') {
+      return next(createHttpError(400, error.errors[0].message));
+    }
     return next(createHttpError(500, 'Error while processing your request'));
   }
 };
@@ -374,7 +401,20 @@ const refreshToken = async (
 
         const { accessToken } = generateTokens(user.id);
 
-        res.json({ accessToken , user:{ username: user.username }, isResumeUploaded: user.isResumeUploaded });
+        res.json({ 
+          accessToken, 
+          user: { 
+            id: user.id,
+            username: user.username,
+            email: user.email,
+            role: user.role,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            phone: user.phone,
+            organization: user.organization
+          }, 
+          isResumeUploaded: user.isResumeUploaded 
+        });
       }
     );
   } catch (error) {
@@ -416,8 +456,122 @@ const githubCallback = async (
   res.redirect(process.env.REDIRECT_URL as string);
 };
 
+const organisationSignup = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const validatedData = organisationSignupSchema.parse(req.body);
+    const { username, email, password, firstName, lastName, phone, organization } = validatedData;
+
+    const existingUser = await prisma.user.findUnique({
+      where: {
+        email,
+      },
+    });
+
+    if (existingUser) {
+      const error = createHttpError(400, 'User already exists with this email');
+      return next(error);
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const newUser = await prisma.user.create({
+      data: {
+        username,
+        email,
+        password: hashedPassword,
+        role: 'ORGANISATION',
+        firstName,
+        lastName,
+        phone,
+        organization,
+      },
+    });
+
+    if (newUser) {
+      const verificationToken = generateVerificationToken();
+
+      const tokenExpiration = new Date();
+      tokenExpiration.setHours(tokenExpiration.getMinutes() + 24);
+
+      await prisma.emailVerificationToken.create({
+        data: {
+          userId: newUser.id,
+          token: verificationToken,
+          expireAt: tokenExpiration,
+        },
+      });
+
+      await sendVerificationEmail(newUser.email, verificationToken);
+      res
+        .status(200)
+        .json({
+          message: 'Sent verification email',
+          isVerified: false,
+          success: true,
+        });
+      return;
+    }
+
+    return next(
+      createHttpError(500, 'Unexpected error occurred while creating user')
+    );
+  } catch (err: any) {
+    console.log(err);
+    if (err.name === 'ZodError') {
+      return next(createHttpError(400, err.errors[0].message));
+    }
+    return next(createHttpError(500, 'Error while processing your request'));
+  }
+};
+
+const getUserProfile = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const _req = req as AuthRequest;
+    const user = await getUserById(_req.user.id);
+    
+    if (!user) {
+      return next(createHttpError(404, 'User not found'));
+    }
+
+    // Return user profile without password
+    const { password, ...userProfile } = user;
+    res.json({ user: userProfile, success: true });
+  } catch (error) {
+    console.log(error);
+    return next(createHttpError(500, 'Error while fetching user profile'));
+  }
+};
+
+const updateUserProfile = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const _req = req as AuthRequest;
+    const validatedData = profileUpdateSchema.parse(req.body);
+    const { firstName, lastName, phone, organization } = validatedData;
+    
+    const updatedUser = await prisma.user.update({
+      where: { id: _req.user.id },
+      data: {
+        firstName,
+        lastName,
+        phone,
+        organization,
+      },
+    });
+
+    const { password, ...userProfile } = updatedUser;
+    res.json({ user: userProfile, success: true, message: 'Profile updated successfully' });
+  } catch (error: any) {
+    console.log(error);
+    if (error.name === 'ZodError') {
+      return next(createHttpError(400, error.errors[0].message));
+    }
+    return next(createHttpError(500, 'Error while updating user profile'));
+  }
+};
+
 export {
-  signup,
+  candidateSignup,
+  organisationSignup,
   signin,
   verifyEmail,
   googleCallback,
@@ -426,4 +580,6 @@ export {
   generateResetToken,
   verifyResetToken,
   refreshToken,
+  getUserProfile,
+  updateUserProfile,
 };
