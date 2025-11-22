@@ -29,6 +29,9 @@ export const LoginWithGoogle = async (
           username: profile.displayName,
           email,
           emailVerified: new Date(),
+          role: 'CANDIDATE', // Default to candidate for social login
+          firstName: profile.name?.givenName || profile.displayName.split(' ')[0] || 'User',
+          lastName: profile.name?.familyName || profile.displayName.split(' ')[1] || 'Name',
         },
       });
     }
@@ -78,6 +81,9 @@ export const LoginWithGithub = async (
           username: profile.displayName,
           email,
           emailVerified: new Date(),
+          role: 'CANDIDATE', // Default to candidate for social login
+          firstName: profile.displayName.split(' ')[0] || 'User',
+          lastName: profile.displayName.split(' ')[1] || 'Name',
         },
       });
     }
