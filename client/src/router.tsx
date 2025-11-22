@@ -16,6 +16,12 @@ import InterviewResourcesPage from "@/pages/InterviewResources/InterviewResource
 import InterviewQuestions from "@/pages/InterviewQuestions/InterviewQuestions";
 import OrganizationDashboard from "@/pages/OrganizationDashboard/OrganizationDashboard";
 import OrganizationProtectedRoute from "@/components/ProtectedRoute/OrganizationProtectedRoute";
+import CoursesPage from "@/pages/Courses/CoursesPage";
+import CourseDetailPage from "@/pages/Courses/CourseDetailPage";
+import CreateCoursePage from "@/pages/Courses/CreateCoursePage";
+import CourseTestPage from "@/pages/Courses/CourseTestPage";
+import TestResultsPage from "@/pages/Courses/TestResultsPage";
+import CertificateVerificationPage from "@/pages/Courses/CertificateVerificationPage";
 
 const mainLayoutRoutes = [
   {
@@ -30,6 +36,30 @@ const mainLayoutRoutes = [
   {
     path: "/interview-questions",
     element: <InterviewQuestions />,
+  },
+  {
+    path: "/courses",
+    element: <CoursesPage />,
+  },
+  {
+    path: "/courses/:id",
+    element: <CourseDetailPage />,
+  },
+  {
+    path: "/courses/create",
+    element: <CreateCoursePage />,
+  },
+  {
+    path: "/courses/:courseId/test/:testId",
+    element: <CourseTestPage />,
+  },
+  {
+    path: "/courses/:courseId/test/:testId/results",
+    element: <TestResultsPage />,
+  },
+  {
+    path: "/verify-certificate/:certificateId",
+    element: <CertificateVerificationPage />,
   },
 ];
 
